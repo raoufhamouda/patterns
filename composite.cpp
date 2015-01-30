@@ -12,14 +12,12 @@ class Composite : public T {
     protected:
 
         std::vector<boost::shared_ptr<T> > components_;
-
         typedef typename std::vector<boost::shared_ptr<T> >::iterator iterator;
-
         typedef typename std::vector<boost::shared_ptr<T> >::const_iterator
             const_iterator;
 
     public:
-        void add(const boost::shared_ptr<T>& c) { components_.push_back(c); }
+        void add(const boost::shared_ptr<T>& c) {components_.push_back(c);}
         void remove(boost::shared_ptr<T> c){ 
             // removes element from collection
             components_.erase(
@@ -42,7 +40,6 @@ class CompositeComponent : public Composite<Component>{
     string name;
 
     public:
-
     CompositeComponent(const string & s);
     void print() override;
 };
@@ -54,27 +51,22 @@ CompositeComponent::CompositeComponent(const string & s){
 
 void CompositeComponent::print(){
     cout << name << endl;
-
     for (auto &e : components_)
         e->print();
-
 }
 
 class Leaf : public Component
 {
     string name;
+
     public:
-
     Leaf(string s) : name(s) {}
-
-    void print() override
-    {
+    void print() override{
         cout << name << endl;
     }
 };
 
-void printComp(Component & c)
-{
+void printComp(Component & c){
     c.print();
 }
 
