@@ -1,5 +1,48 @@
 #include "observer.hpp"
 
+
+Observer::Observer(const Observer& o)
+: observables_(o.observables_) {
+    for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
+        (*i)->registerObserver(this);
+}
+
+Observer& Observer::operator=(const Observer& o) {
+    iterator i;
+    for (i=observables_.begin(); i!=observables_.end(); ++i)
+        (*i)->unregisterObserver(this);
+    observables_ = o.observables_;
+    for (i=observables_.begin(); i!=observables_.end(); ++i)
+        (*i)->registerObserver(this);
+    return *this;
+}
+
+Observer::~Observer() {
+    for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
+        (*i)->unregisterObserver(this);
+}
+
+std::pair<std::set<boost::shared_ptr<Observable> >::iterator, bool>
+Observer::registerWith(const boost::shared_ptr<Observable>& h) {
+    if (h) {
+        h->registerObserver(this);
+        return observables_.insert(h);
+    }
+    return std::make_pair(observables_.end(), false);
+}
+
+size_t Observer::unregisterWith(const boost::shared_ptr<Observable>& h) {
+    if (h)
+        h->unregisterObserver(this);
+    return observables_.erase(h);
+}
+
+void Observer::unregisterWithAll() {
+    for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
+        (*i)->unregisterObserver(this);
+    observables_.clear();
+}
+
 Observable::Observable(const Observable&) {
     // the observer set is not copied; no observer asked to
     // register with this object
@@ -47,45 +90,3 @@ void Observable::notifyObservers() {
     ENSURE(successful, "could not notify one or more observers: " << errMsg);
 }
 
-
-Observer::Observer(const Observer& o)
-: observables_(o.observables_) {
-    for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
-        (*i)->registerObserver(this);
-}
-
-Observer& Observer::operator=(const Observer& o) {
-    iterator i;
-    for (i=observables_.begin(); i!=observables_.end(); ++i)
-        (*i)->unregisterObserver(this);
-    observables_ = o.observables_;
-    for (i=observables_.begin(); i!=observables_.end(); ++i)
-        (*i)->registerObserver(this);
-    return *this;
-}
-
-Observer::~Observer() {
-    for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
-        (*i)->unregisterObserver(this);
-}
-
-std::pair<std::set<boost::shared_ptr<Observable> >::iterator, bool>
-Observer::registerWith(const boost::shared_ptr<Observable>& h) {
-    if (h) {
-        h->registerObserver(this);
-        return observables_.insert(h);
-    }
-    return std::make_pair(observables_.end(), false);
-}
-
-size_t Observer::unregisterWith(const boost::shared_ptr<Observable>& h) {
-    if (h)
-        h->unregisterObserver(this);
-    return observables_.erase(h);
-}
-
-void Observer::unregisterWithAll() {
-    for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
-        (*i)->unregisterObserver(this);
-    observables_.clear();
-}

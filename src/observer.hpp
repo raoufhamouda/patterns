@@ -1,9 +1,9 @@
-/*! \file observable.hpp
+/*! \file obserer.hpp
     \brief observer/observable pattern
 */
 
-#ifndef observable_hpp
-#define observable_hpp
+#ifndef observer_hpp
+#define observer_hpp
 
 #include <iostream>
 #include <string>
