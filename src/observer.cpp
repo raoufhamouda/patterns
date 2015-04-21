@@ -1,25 +1,25 @@
 #include "observer.hpp"
-
+#include "errors.hpp"
 
 Observer::Observer(const Observer& o)
 : observables_(o.observables_) {
-    for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
-        (*i)->registerObserver(this);
+
+    for (auto &e : observables_) // c++0x
+        e->registerObserver(this);
 }
 
 Observer& Observer::operator=(const Observer& o) {
-    iterator i;
-    for (i=observables_.begin(); i!=observables_.end(); ++i)
-        (*i)->unregisterObserver(this);
+    for (auto &e : observables_) // c++0x
+        e->unregisterObserver(this);
     observables_ = o.observables_;
-    for (i=observables_.begin(); i!=observables_.end(); ++i)
-        (*i)->registerObserver(this);
+    for (auto &e : observables_) // c++0x
+        e->registerObserver(this);
     return *this;
 }
 
 Observer::~Observer() {
-    for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
-        (*i)->unregisterObserver(this);
+    for (auto &e : observables_) // c++0x
+        e->unregisterObserver(this);
 }
 
 std::pair<std::set<boost::shared_ptr<Observable> >::iterator, bool>
@@ -38,8 +38,8 @@ size_t Observer::unregisterWith(const boost::shared_ptr<Observable>& h) {
 }
 
 void Observer::unregisterWithAll() {
-    for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
-        (*i)->unregisterObserver(this);
+    for (auto &e : observables_) // c++0x
+        e->unregisterObserver(this);
     observables_.clear();
 }
 
@@ -89,4 +89,3 @@ void Observable::notifyObservers() {
     }
     ENSURE(successful, "could not notify one or more observers: " << errMsg);
 }
-
