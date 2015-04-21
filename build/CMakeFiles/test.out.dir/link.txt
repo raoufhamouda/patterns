@@ -1,0 +1,1 @@
+/usr/bin/c++   -g   CMakeFiles/test.out.dir/src/main.cpp.o  -o bin/debug/test.out  -L/home/raouf/dev/patterns/test/../build/lib/debug -rdynamic -lpatterns -Wl,-rpath,/home/raouf/dev/patterns/test/../build/lib/debug 

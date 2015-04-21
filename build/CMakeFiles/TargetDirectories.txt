@@ -1,0 +1,1 @@
+/home/raouf/dev/patterns/build/CMakeFiles/test.out.dir

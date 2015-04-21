@@ -1,0 +1,6 @@
+cmake .. -DCMAKE_BUILD_TYPE:String=debug
+make
+rm CMakeCache.txt cmake_install.cmake Makefile ; rm -rf CMakeFiles
+cmake ../test/ -DCMAKE_BUILD_TYPE:String=debug
+make
+
