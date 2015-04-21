@@ -3,23 +3,18 @@
 
 Observer::Observer(const Observer& o)
 : observables_(o.observables_) {
-
-    for (auto &e : observables_) // c++0x
-        e->registerObserver(this);
+    for (auto &e : observables_) e->registerObserver(this);
 }
 
 Observer& Observer::operator=(const Observer& o) {
-    for (auto &e : observables_) // c++0x
-        e->unregisterObserver(this);
+    for (auto &e : observables_) e->unregisterObserver(this);
     observables_ = o.observables_;
-    for (auto &e : observables_) // c++0x
-        e->registerObserver(this);
+    for (auto &e : observables_) e->registerObserver(this);
     return *this;
 }
 
 Observer::~Observer() {
-    for (auto &e : observables_) // c++0x
-        e->unregisterObserver(this);
+    for (auto &e : observables_) e->unregisterObserver(this);
 }
 
 std::pair<std::set<boost::shared_ptr<Observable> >::iterator, bool>
@@ -32,14 +27,12 @@ Observer::registerWith(const boost::shared_ptr<Observable>& h) {
 }
 
 size_t Observer::unregisterWith(const boost::shared_ptr<Observable>& h) {
-    if (h)
-        h->unregisterObserver(this);
+    if (h) h->unregisterObserver(this);
     return observables_.erase(h);
 }
 
 void Observer::unregisterWithAll() {
-    for (auto &e : observables_) // c++0x
-        e->unregisterObserver(this);
+    for (auto &e : observables_) e->unregisterObserver(this);
     observables_.clear();
 }
 
@@ -59,8 +52,7 @@ Observable::Observable(const Observable&) {
 Observable& Observable::operator=(const Observable& o) {
     // as above, the observer set is not copied. Moreover,
     // observers of this object must be notified of the change
-    if (&o != this)
-        notifyObservers();
+    if (&o != this) notifyObservers();
     return *this;
 }
 
@@ -77,13 +69,15 @@ size_t Observable::unregisterObserver(Observer* o) {
 void Observable::notifyObservers() {
     bool successful = true;
     std::string errMsg;
-    for (iterator i=observers_.begin(); i!=observers_.end(); ++i) {
+    for (auto &c : observers_){ // c++0x
         try {
-            (*i)->update();
-        } catch (std::exception& e) {
+            c->update();
+        }
+        catch (std::exception& e) {
             successful = false;
             errMsg = e.what();
-        } catch (...) {
+        }
+        catch (...) {
             successful = false;
         }
     }
